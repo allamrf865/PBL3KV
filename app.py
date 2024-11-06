@@ -10,27 +10,26 @@ def load_patient_data(file_path="sample_data.json"):
         data = json.load(f)
     return data
 
-# Fungsi untuk menyimpan data pasien ke JSON setelah input baru
-def save_patient_data(data, file_path="sample_data.json"):
-    with open(file_path, 'w') as f:
-        json.dump(data, f, indent=4)
-
 # Pengaturan halaman aplikasi
-st.set_page_config(page_title="3D Advanced Patient Monitoring", layout="wide")
+st.set_page_config(page_title="3D Medical Dashboard", layout="wide")
 
 # Judul aplikasi
-st.title("🌌 Advanced 3D Anatomy Patient Monitoring System 🌌")
-
-# Tampilkan waktu terakhir update
-st.write(f"Data terakhir diperbarui pada: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+st.title("🌌 Advanced 3D Medical Dashboard for Acute Coronary Syndrome 🌌")
 
 # Mengambil data pasien dari JSON
 patient_data = load_patient_data()
 
-# Jika data pasien tersedia
 if patient_data:
-    # Form input data baru untuk pasien
-    st.subheader("📝 Input Data Baru Pasien")
+    # Panel data pasien dengan informasi dasar dan riwayat
+    st.sidebar.header("🧑‍⚕️ Informasi Pasien")
+    st.sidebar.write(f"**Nama**: {patient_data['name']}")
+    st.sidebar.write(f"**Usia**: {patient_data['age']} tahun")
+    st.sidebar.write(f"**Jenis Kelamin**: {patient_data['gender']}")
+    st.sidebar.write(f"**Diabetes**: {'Ya' if patient_data['medical_history']['diabetes'] else 'Tidak'}")
+    st.sidebar.write(f"**Hipertensi**: {'Ya' if patient_data['medical_history']['hypertension'] else 'Tidak'}")
+
+    # Form untuk input data vital
+    st.subheader("📝 Input Data Vital Baru")
     with st.form("update_data_form"):
         heart_rate = st.number_input("Detak Jantung (BPM)", min_value=50, max_value=200, value=int(patient_data["current_conditions"]["heart_rate"]))
         blood_pressure = st.number_input("Tekanan Darah (mmHg)", min_value=80, max_value=200, value=int(patient_data["current_conditions"]["blood_pressure"]))
@@ -45,73 +44,48 @@ if patient_data:
             save_patient_data(patient_data)
             st.success("Data berhasil diperbarui!")
 
-    # Model Anatomi 3D dengan Plotly Mesh3D
-    st.subheader("🔬 Model 3D Anatomi Manusia dengan Anotasi Penyakit")
+    # Grafik 3D untuk visualisasi vital signs
+    st.subheader("📊 Grafik 3D Vital Signs Pasien")
+    heart_rate_values = np.random.normal(patient_data['current_conditions']['heart_rate'], 5, 30)
+    blood_pressure_values = np.random.normal(patient_data['current_conditions']['blood_pressure'], 10, 30)
+    oxygen_level_values = np.random.normal(patient_data['current_conditions']['oxygen_level'], 2, 30)
+    vital_signs_graph = go.Scatter3d(
+        x=heart_rate_values,
+        y=blood_pressure_values,
+        z=oxygen_level_values,
+        mode='lines+markers',
+        marker=dict(size=5, color='lime', opacity=0.7),
+        line=dict(color='blue', width=2)
+    )
+    layout_vital_signs = go.Layout(
+        scene=dict(
+            xaxis=dict(title='Heart Rate (BPM)'),
+            yaxis=dict(title='Blood Pressure (mmHg)'),
+            zaxis=dict(title='Oxygen Level (%)')
+        )
+    )
+    fig_vital_signs = go.Figure(data=[vital_signs_graph], layout=layout_vital_signs)
+    st.plotly_chart(fig_vital_signs, use_container_width=True)
 
-    # Menggunakan Plotly untuk menampilkan model anatomi manusia dengan titik penyakit
-    # Contoh sederhana untuk representasi dengan anotasi
-    fig = go.Figure()
-
-    # Model anatomi manusia (sederhana)
-    x = np.linspace(-5, 5, 100)
-    y = np.linspace(-10, 10, 100)
-    z = np.linspace(0, 20, 100)
-    mesh3d = go.Mesh3d(x=x, y=y, z=z, opacity=0.2, color='lightblue')
-
-    # Anotasi penyakit dari data JSON
-    annotations = go.Scatter3d(
+    # Model 3D anatomi manusia
+    st.subheader("🔬 Model 3D Anatomi dengan Anotasi Penyakit")
+    anatomy_mesh = go.Mesh3d(x=np.linspace(-5, 5, 100), y=np.linspace(-10, 10, 100), z=np.linspace(0, 20, 100), opacity=0.2, color='lightblue')
+    disease_annotations = go.Scatter3d(
         x=[d['x'] for d in patient_data["disease_annotations"]],
         y=[d['y'] for d in patient_data["disease_annotations"]],
         z=[d['z'] for d in patient_data["disease_annotations"]],
         mode='markers+text',
-        marker=dict(size=8, color='red'),
+        marker=dict(size=10, color='red'),
         text=[f"{d['part']}: {d['description']}" for d in patient_data["disease_annotations"]],
-        textposition="top center"
     )
-
-    fig.add_trace(mesh3d)
-    fig.add_trace(annotations)
-
-    fig.update_layout(
-        scene=dict(
-            xaxis=dict(title='X-Axis'),
-            yaxis=dict(title='Y-Axis'),
-            zaxis=dict(title='Z-Axis')
-        ),
-        title="Anatomi Manusia dengan Lokasi Penyakit"
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    # Dashboard 3D Interaktif untuk Kesehatan Pasien
-    st.subheader("📊 Dashboard 3D Kesehatan Pasien dengan Animasi")
-
-    # Grafik interaktif untuk kesehatan pasien (detak jantung, tekanan darah, dan kadar oksigen)
-    heart_rates = np.linspace(70, patient_data["current_conditions"]["heart_rate"], num=30)
-    blood_pressures = np.linspace(120, patient_data["current_conditions"]["blood_pressure"], num=30)
-    oxygen_levels = np.linspace(95, patient_data["current_conditions"]["oxygen_level"], num=30)
-
-    health_graph = go.Scatter3d(
-        x=heart_rates,
-        y=blood_pressures,
-        z=oxygen_levels,
-        mode='lines+markers',
-        marker=dict(size=6, color='cyan', opacity=0.8),
-        line=dict(color='magenta', width=4)
-    )
-
-    # Pengaturan layout untuk tampilan interaktif tanpa animasi kompleks
-    layout_health = go.Layout(
-        scene=dict(
-            xaxis=dict(title='Detak Jantung (BPM)', backgroundcolor="black", gridcolor="gray"),
-            yaxis=dict(title='Tekanan Darah (mmHg)', backgroundcolor="black", gridcolor="gray"),
-            zaxis=dict(title='Kadar Oksigen (%)', backgroundcolor="black", gridcolor="gray")
-        ),
-        title="Tren Kesehatan Pasien",
-    )
-
-    fig_health = go.Figure(data=[health_graph], layout=layout_health)
-    st.plotly_chart(fig_health, use_container_width=True)
+    fig_anatomy = go.Figure(data=[anatomy_mesh, disease_annotations])
+    fig_anatomy.update_layout(scene=dict(xaxis=dict(title='X'), yaxis=dict(title='Y'), zaxis=dict(title='Z')))
+    st.plotly_chart(fig_anatomy, use_container_width=True)
+    
+    # Rekomendasi gizi dan rehabilitasi
+    st.subheader("🍲 Rekomendasi Nutrisi & Rehabilitasi")
+    st.write(patient_data["recommendations"]["nutritional_advice"])
+    st.write(patient_data["recommendations"]["rehabilitation_plan"])
 
 else:
     st.error("Data pasien tidak ditemukan.")
