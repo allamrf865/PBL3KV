@@ -100,7 +100,7 @@ if patient_data:
         line=dict(color='magenta', width=4)
     )
 
-    # Animasikan data agar terlihat lebih hidup
+    # Pengaturan layout untuk tampilan interaktif tanpa animasi kompleks
     layout_health = go.Layout(
         scene=dict(
             xaxis=dict(title='Detak Jantung (BPM)', backgroundcolor="black", gridcolor="gray"),
@@ -108,17 +108,6 @@ if patient_data:
             zaxis=dict(title='Kadar Oksigen (%)', backgroundcolor="black", gridcolor="gray")
         ),
         title="Tren Kesehatan Pasien",
-        updatemenus=[dict(
-            type="buttons",
-            showactive=False,
-            buttons=[dict(label="Putar",
-                          method="animate",
-                          args=[None, {"frame": {"duration": 100, "redraw": True}, "fromcurrent": True}])])],
-        frames=[go.Frame(data=[go.Scatter3d(
-            x=np.linspace(70, hr, num=30),
-            y=np.linspace(120, bp, num=30),
-            z=np.linspace(95, ox, num=30)
-        )]) for hr, bp, ox in zip(heart_rates, blood_pressures, oxygen_levels)]
     )
 
     fig_health = go.Figure(data=[health_graph], layout=layout_health)
