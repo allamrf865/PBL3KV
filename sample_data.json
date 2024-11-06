@@ -10,35 +10,40 @@
         "family_history": "Father had heart disease, mother has hypertension"
     },
     "current_conditions": {
-        "heart_rate": 82,
-        "blood_pressure": 135,
+        "heart_rate": 85,
+        "blood_pressure": 130,
         "oxygen_level": 95,
         "glucose_level": 108,
         "cholesterol_level": 210,
-        "activity_level": "Sedang",
+        "activity_level": "Moderate",
         "risk_score": 3,
         "weight": 85,
         "height": 175,
         "bmi": 27.8
     },
+    "disease_annotations": [
+        {"part": "Kidneys", "x": 1, "y": 5, "z": 20, "description": "Kidney Stones"},
+        {"part": "Heart", "x": 5, "y": 10, "z": 30, "description": "Arrhythmia"},
+        {"part": "Lungs", "x": -2, "y": 15, "z": 25, "description": "Pneumonia"}
+    ],
     "daily_stats": {
-        "avg_heart_rate": 80,
-        "max_heart_rate": 92,
-        "min_heart_rate": 74,
-        "avg_blood_pressure": "132/85",
-        "steps_count": 4500,
-        "calories_burned": 1800,
-        "sleep_hours": 6.5,
-        "exercise_duration": 20
+        "avg_heart_rate": 82,
+        "max_heart_rate": 95,
+        "min_heart_rate": 70,
+        "avg_blood_pressure": "128/82",
+        "steps_count": 5000,
+        "calories_burned": 2000,
+        "sleep_hours": 7,
+        "exercise_duration": 30
     },
     "recommendations": {
-        "nutritional_advice": "Kurangi konsumsi sodium, tingkatkan asupan serat dan buah, serta batasi lemak jenuh.",
-        "rehabilitation_plan": "Mulai dengan berjalan 15 menit setiap hari, lalu tingkatkan ke 30 menit selama 3 kali seminggu."
+        "nutritional_advice": "Reduce sodium intake, aim for 2000 calories per day, and increase fruit and vegetable intake.",
+        "rehabilitation_plan": "Start with walking 20 minutes per day, gradually increase duration every week."
     },
     "alerts": {
         "recent_alerts": [
-            {"date": "2024-10-01", "alert": "Tingkat gula darah tinggi, disarankan cek lab HbA1c."},
-            {"date": "2024-09-25", "alert": "Tekanan darah tinggi, disarankan evaluasi obat."}
+            {"date": "2024-10-01", "alert": "Blood sugar level high, recommended HbA1c test."},
+            {"date": "2024-09-25", "alert": "High blood pressure, evaluate medication."}
         ],
         "last_checkup": "2024-08-15"
     },
