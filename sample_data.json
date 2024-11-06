@@ -21,10 +21,11 @@
         "height": 175,
         "bmi": 27.8
     },
-    "disease_annotations": [
-        {"part": "Kidneys", "x": 1, "y": 5, "z": 20, "description": "Kidney Stones"},
-        {"part": "Heart", "x": 5, "y": 10, "z": 30, "description": "Arrhythmia"},
-        {"part": "Lungs", "x": -2, "y": 15, "z": 25, "description": "Pneumonia"}
+"disease_annotations": [
+    {"part": "Kidneys", "x": 1, "y": 5, "z": 20, "description": "Kidney Stones"},
+    {"part": "Heart", "x": 5, "y": 10, "z": 30, "description": "Arrhythmia"},
+    {"part": "Lungs", "x": -2, "y": 15, "z": 25, "description": "Pneumonia"}
+]
     ],
     "daily_stats": {
         "avg_heart_rate": 82,
