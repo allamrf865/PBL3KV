@@ -53,6 +53,16 @@ if patient_data:
     y = np.linspace(0, 10, 50)
     z = np.linspace(10, 20, 50)
 
+# Model Anatomi dengan Anotasi Penyakit
+st.subheader("🔬 Model 3D Anatomi Pasien")
+
+# Cek apakah "disease_annotations" ada di dalam data JSON
+if "disease_annotations" in patient_data:
+    # Koordinat sederhana model manusia
+    x = np.linspace(-5, 5, 50)  # Ganti dengan koordinat model 3D anatomi manusia
+    y = np.linspace(0, 10, 50)
+    z = np.linspace(10, 20, 50)
+
     # Model 3D Anatomi dengan anotasi penyakit
     mesh3d = go.Mesh3d(x=x, y=y, z=z, opacity=0.5, color='lightblue')
     annotations = go.Scatter3d(
@@ -73,6 +83,8 @@ if patient_data:
 
     fig = go.Figure(data=[mesh3d, annotations], layout=layout)
     st.plotly_chart(fig, use_container_width=True)
+else:
+    st.write("Tidak ada data anotasi penyakit yang ditemukan.")
 
     # Grafik Kesehatan 3D Real-Time
     st.subheader("📊 Grafik Kesehatan 3D Pasien")
