@@ -103,5 +103,3 @@ else:
 
     fig_health = go.Figure(data=[health_graph])
     st.plotly_chart(fig_health, use_container_width=True)
-else:
-    st.error("Data pasien tidak ditemukan.")
