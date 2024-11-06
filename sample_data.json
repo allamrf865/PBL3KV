@@ -1,0 +1,51 @@
+{
+    "patient_id": "patient_001",
+    "name": "John Doe",
+    "age": 52,
+    "gender": "Male",
+    "medical_history": {
+        "diabetes": true,
+        "hypertension": true,
+        "smoking_history": "30 years, currently smoking 1 pack/day",
+        "family_history": "Father had heart disease, mother has hypertension"
+    },
+    "current_conditions": {
+        "heart_rate": 82,
+        "blood_pressure": 135,
+        "oxygen_level": 95,
+        "glucose_level": 108,
+        "cholesterol_level": 210,
+        "activity_level": "Sedang",
+        "risk_score": 3,
+        "weight": 85,
+        "height": 175,
+        "bmi": 27.8
+    },
+    "daily_stats": {
+        "avg_heart_rate": 80,
+        "max_heart_rate": 92,
+        "min_heart_rate": 74,
+        "avg_blood_pressure": "132/85",
+        "steps_count": 4500,
+        "calories_burned": 1800,
+        "sleep_hours": 6.5,
+        "exercise_duration": 20
+    },
+    "recommendations": {
+        "nutritional_advice": "Kurangi konsumsi sodium, tingkatkan asupan serat dan buah, serta batasi lemak jenuh.",
+        "rehabilitation_plan": "Mulai dengan berjalan 15 menit setiap hari, lalu tingkatkan ke 30 menit selama 3 kali seminggu."
+    },
+    "alerts": {
+        "recent_alerts": [
+            {"date": "2024-10-01", "alert": "Tingkat gula darah tinggi, disarankan cek lab HbA1c."},
+            {"date": "2024-09-25", "alert": "Tekanan darah tinggi, disarankan evaluasi obat."}
+        ],
+        "last_checkup": "2024-08-15"
+    },
+    "risk_factors": {
+        "smoking_risk": "High",
+        "diabetes_risk": "Moderate",
+        "heart_disease_risk": "High",
+        "activity_risk": "Low"
+    }
+}
