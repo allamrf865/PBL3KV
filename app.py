@@ -3,6 +3,7 @@ import plotly.graph_objs as go
 import numpy as np
 import json
 from datetime import datetime
+from streamlit.components.v1 import html
 
 # Fungsi untuk memuat data pasien dari JSON
 def load_patient_data(file_path="sample_data.json"):
@@ -11,7 +12,7 @@ def load_patient_data(file_path="sample_data.json"):
     return data
 
 # Pengaturan halaman aplikasi
-st.set_page_config(page_title="3D Holographic Patient Monitoring", layout="wide")
+st.set_page_config(page_title="Advanced 3D Patient Monitoring", layout="wide")
 st.markdown(
     """
     <style>
@@ -48,21 +49,49 @@ patient_data = load_patient_data()
 
 # Jika data pasien tersedia
 if patient_data:
-    # Informasi Dasar Pasien
+    # Tampilan Dasbor dengan Model 3D Pasien
     st.subheader(f"🧑‍⚕️ Informasi Pasien: {patient_data['name']}")
     st.write(f"**ID Pasien**: {patient_data['patient_id']}")
     st.write(f"**Usia**: {patient_data['age']} tahun")
     st.write(f"**Jenis Kelamin**: {patient_data['gender']}")
     
-    # Riwayat Kesehatan Pasien
-    st.subheader("📋 Riwayat Kesehatan Pasien")
-    st.write("**Diabetes**: ", "Ya" if patient_data["medical_history"]["diabetes"] else "Tidak")
-    st.write("**Hipertensi**: ", "Ya" if patient_data["medical_history"]["hypertension"] else "Tidak")
-    st.write("**Riwayat Merokok**: ", patient_data["medical_history"]["smoking_history"])
-    st.write("**Riwayat Keluarga**: ", patient_data["medical_history"]["family_history"])
+    # Model 3D Pasien
+    st.subheader("🔬 Model 3D Pasien")
+    html("""
+    <script type="module">
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.126.1/build/three.module.js';
+      import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.126.1/examples/jsm/loaders/GLTFLoader.js';
 
-    # Kondisi Saat Ini dalam Grafik 3D dengan Efek Neon dan Trail
-    st.subheader("🔮 Kondisi Pasien dalam Grafik 3D Holografis 🔮")
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      const loader = new GLTFLoader();
+      loader.load(
+        'https://your_bucket_url/patient_model.glb',
+        function (gltf) {
+          scene.add(gltf.scene);
+          gltf.scene.rotation.y += 0.01;  // Rotate the model for animation
+          animate();
+        },
+        undefined,
+        function (error) {
+          console.error(error);
+        }
+      );
+
+      camera.position.z = 5;
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      }
+    </script>
+    """, height=400)
+
+    # Kondisi Saat Ini dalam Grafik 3D
+    st.subheader("💎 Kondisi Pasien dalam Grafik 3D 💎")
     heart_rates = np.linspace(patient_data['current_conditions']['heart_rate'] - 5, 
                               patient_data['current_conditions']['heart_rate'], num=30)
     blood_pressures = np.linspace(patient_data['current_conditions']['blood_pressure'] - 5, 
@@ -91,38 +120,21 @@ if patient_data:
         title=f"<b>Patient ID:</b> {patient_data['patient_id']} | <b>Risk Score:</b> {patient_data['current_conditions']['risk_score']}",
     )
 
-    # Render grafik 3D
     fig = go.Figure(data=[trace], layout=layout)
     st.plotly_chart(fig, use_container_width=True)
 
-    # Statistik Harian Pasien
-    st.subheader("📊 Statistik Harian Pasien")
-    st.write(f"- **Detak Jantung Rata-rata**: {patient_data['daily_stats']['avg_heart_rate']} BPM")
-    st.write(f"- **Tekanan Darah Rata-rata**: {patient_data['daily_stats']['avg_blood_pressure']}")
-    st.write(f"- **Jumlah Langkah**: {patient_data['daily_stats']['steps_count']}")
-    st.write(f"- **Kalori Terbakar**: {patient_data['daily_stats']['calories_burned']} kcal")
-    st.write(f"- **Jam Tidur**: {patient_data['daily_stats']['sleep_hours']} jam")
-    st.write(f"- **Durasi Olahraga**: {patient_data['daily_stats']['exercise_duration']} menit")
-
-    # Rekomendasi Nutrisi dan Rencana Rehabilitasi
-    st.subheader("🍎 Rekomendasi Nutrisi")
-    st.markdown(f"<div style='color:#00FFD1;font-size:20px;font-weight:bold;'>{patient_data['recommendations']['nutritional_advice']}</div>", unsafe_allow_html=True)
-
-    st.subheader("🏃‍♂️ Rencana Rehabilitasi Medik")
-    st.markdown(f"<div style='color:#FF00FF;font-size:20px;font-weight:bold;'>{patient_data['recommendations']['rehabilitation_plan']}</div>", unsafe_allow_html=True)
-
-    # Peringatan Kesehatan Terbaru
-    st.subheader("🚨 Peringatan Kesehatan Terbaru 🚨")
-    for alert in patient_data["alerts"]["recent_alerts"]:
-        st.write(f"- **Tanggal**: {alert['date']} | **Peringatan**: {alert['alert']}")
-    st.write(f"**Pemeriksaan Terakhir**: {patient_data['alerts']['last_checkup']}")
-
-    # Faktor Risiko Pasien
-    st.subheader("⚠️ Faktor Risiko Pasien")
-    st.write(f"- **Risiko Merokok**: {patient_data['risk_factors']['smoking_risk']}")
-    st.write(f"- **Risiko Diabetes**: {patient_data['risk_factors']['diabetes_risk']}")
-    st.write(f"- **Risiko Penyakit Jantung**: {patient_data['risk_factors']['heart_disease_risk']}")
-    st.write(f"- **Risiko Aktivitas Fisik**: {patient_data['risk_factors']['activity_risk']}")
+    # Panel Informasi Lainnya
+    st.subheader("📊 Statistik Harian dan Kesehatan Pasien")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Detak Jantung Rata-rata", f"{patient_data['daily_stats']['avg_heart_rate']} BPM")
+        st.metric("Langkah Harian", f"{patient_data['daily_stats']['steps_count']}")
+    with col2:
+        st.metric("Tekanan Darah Rata-rata", patient_data['daily_stats']['avg_blood_pressure'])
+        st.metric("Kalori Terbakar", f"{patient_data['daily_stats']['calories_burned']} kcal")
+    with col3:
+        st.metric("Jam Tidur", f"{patient_data['daily_stats']['sleep_hours']} jam")
+        st.metric("Durasi Olahraga", f"{patient_data['daily_stats']['exercise_duration']} menit")
 
 else:
     st.error("Data pasien tidak ditemukan.")
